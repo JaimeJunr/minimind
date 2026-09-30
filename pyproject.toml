@@ -1,0 +1,64 @@
+# Configuração das ferramentas de qualidade (não é um pacote instalável).
+# Política e comandos: docs/QUALIDADE.md
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes: nomes indefinidos, imports sem uso, etc.
+    "I",        # ordenação de imports
+    "B",        # bugbear: armadilhas comuns
+    "UP",       # sintaxe moderna para a versão alvo
+    "SIM",      # simplificações
+    "C4",       # comprehensions
+    "PIE",      # construções desnecessárias
+    "N",        # nomes (PEP 8)
+    "C90",      # complexidade ciclomática (mccabe)
+    "PLR0911",  # retornos demais
+    "PLR0912",  # ramificações demais
+    "PLR0913",  # argumentos demais
+    "PLR0915",  # instruções demais
+]
+ignore = [
+    "N806",  # convenção de ML: tensores com nomes em maiúsculas (B, T, C)
+    "N812",  # convenção do PyTorch: import torch.nn.functional as F
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+# Código herdado do upstream (jingyaogong/minimind): as regras que ele já viola ficam
+# desligadas só nesses caminhos, para não reformatar tudo e manter o merge com o upstream
+# simples. Todas as outras regras valem aqui também, e código novo segue o padrão completo.
+# Ao corrigir um desses arquivos, remova o código da lista correspondente.
+[tool.ruff.lint.per-file-ignores]
+"dataset/**" = ["E501", "E701", "F401", "I001", "SIM102", "UP015"]
+"eval_llm.py" = ["E501", "E701", "F403", "F405", "I001", "W292", "W293"]
+"model/**" = [
+    "B007", "B010", "B905", "C901", "E401", "E501", "E701", "E702", "E731", "E741", "F401", "I001",
+    "PLR0913", "W291", "W292", "W293",
+]
+"scripts/**" = [
+    "B007", "B904", "C901", "E501", "E701", "E702", "E722", "E741", "F541", "F841", "I001", "PLR0911",
+    "PLR0912", "PLR0913", "PLR0915", "SIM102", "SIM105", "SIM115", "UP015", "W291", "W293",
+]
+"trainer/**" = [
+    "B007", "B905", "C901", "E501", "E701", "E702", "E722", "F401", "F841", "I001", "N802", "PLR0912",
+    "PLR0913", "PLR0915", "SIM105", "SIM108", "SIM210", "SIM905", "UP006", "UP015", "UP035", "UP045",
+    "W291", "W292", "W293",
+]
+
+[tool.ruff.format]
+# Mesmo motivo: o código herdado e os exemplos de código dos READMEs mantêm o estilo do upstream.
+exclude = ["dataset/**", "eval_llm.py", "model/**", "scripts/**", "trainer/**", "*.md"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["model", "dataset", "trainer", "scripts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
