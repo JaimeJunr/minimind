@@ -1,0 +1,21 @@
+# PRs semanais de atualização. Cada PR passa pelo CI (lint, segurança e testes) antes do merge.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      ferramentas-de-qualidade:
+        patterns: [ruff, bandit, pip-audit, radon, pytest]
+      dependencias-minor-e-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
